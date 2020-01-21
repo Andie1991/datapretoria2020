@@ -80,10 +80,10 @@ Now that you have a job, you just have to tell Condor to run it. Put the
 following text into a file called `submit`:
 
 ```
-executable = short.sh
+executable = simple.sh
 arguments  = 4 10
-output = short.output
-log = short.log
+output = simple.output
+log = simple.log
 
 request_cpus = 1
 request_memory = 1 MB
