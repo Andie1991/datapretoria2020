@@ -57,8 +57,7 @@ $ ls -lh simple.sh
 -rwxr-xr-x 1 roy roy 595K Jun 20 11:12 simple.sh
 ```
 
-Finally, run the program and tell it to sleep for four seconds and calculate 10
-* 2: 
+Finally, run the program and tell it to sleep for four seconds and calculate 10\* 2: 
 
 ```
 $ ./simple.sh 4 10
