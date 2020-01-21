@@ -41,7 +41,11 @@ You will be logging into training.osgconnect.net for the CyberInfrastructure exe
 
 Due to the local network firewall setup (another security mechanism) and key installation, we will go to the CHPC facility first (thanks to Nkwe and Anwar for setting up this). 
 
-Replace XX with your osguser ID and use the password you have been supplied with the following command. 
+We will be using the studentXX acounts (replace XX with your osguser ID) with
+the specified password.
+
+If you are using a Linux Machine, open a terminal and use the following
+command (and use the password you have been supplied). 
 
 ```
 ssh -o PreferredAuthentications=password student0XX@lengau.chpc.ac.za
@@ -55,7 +59,10 @@ After hitting the *Open* button you may see the following message:
 
 You should hit the *Yes* button.
 
-Login on our submission node using the following command along with the password you have been supplied. 
+
+### After connecting to the CHPC facility
+
+Login on to the OSG submission node using the following command along with the password you have been supplied. 
 
 ```
 $ ssh training.osgconnect.net
