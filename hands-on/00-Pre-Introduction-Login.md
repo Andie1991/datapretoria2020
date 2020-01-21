@@ -9,7 +9,7 @@ https://www.putty.org/
 [Direct link to executable](https://the.earth.li/~sgtatham/putty/latest/w64/putty.exe)
 
 After opening the executable you should see the following screen:
-![Putty Screen shot](https://github.com/CODATA-RDA-DataScienceSchools/Materials/raw/master/docs/DataSanJose2019/CI/putty_screenshot.png)
+![Putty Screen shot](putty_screenshot.png)
 
 ## Authentication for CI Exercises
 
@@ -39,17 +39,19 @@ Why do you need both a password and a key? What is the role of the password in t
 
 You will be logging into training.osgconnect.net for the CyberInfrastructure exercises. To confirm you have the proper authentication and authorization to do the exercises tomorrow and Friday we will test logins today. 
 
-Due to the local network firewall setup (another security mechanism) and key installation, we will go to the CHPC facility first (thanks to Nkwe and Anwar for setting up this). Replace XX with your osguser ID and use the password you have been supplied with the following command. 
+Due to the local network firewall setup (another security mechanism) and key installation, we will go to the CHPC facility first (thanks to Nkwe and Anwar for setting up this). 
+
+Replace XX with your osguser ID and use the password you have been supplied with the following command. 
 
 ```
 ssh -o PreferredAuthentications=password student0XX@lengau.chpc.ac.za
 ```
 
 If you are using putty, you should fill the *Host Name (or IP address)* with the value `lengau.chpc.ac.za` as seen below:
-![Putty with host information](https://github.com/CODATA-RDA-DataScienceSchools/Materials/raw/master/docs/DataSanJose2019/CI/putty_hostname.png)
+![Putty with host information](putty_hostname.png)
 
 After hitting the *Open* button you may see the following message:
-![Accept new Host](https://github.com/CODATA-RDA-DataScienceSchools/Materials/raw/master/docs/DataSanJose2019/CI/accept_host.png)
+![Accept new Host](accept_host.png)
 
 You should hit the *Yes* button.
 
