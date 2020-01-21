@@ -9,7 +9,7 @@ So far, we've done really simple examples where the entire input to the program 
 First, let's make a program, call it `analyze.sh` that analyzes a text file that it is provided on the command-line.
 
 ```
-#!/bin/sh
+#!/bin/bash
 
 if [ $# -ne 1 ]; then
     echo "Usage: analyze.sh <filename>"
@@ -59,14 +59,11 @@ perish from the earth.
 Our submit file looks nearly identical to what we had before, except for the one bolded line that specifies the data file to transfer.  Put the following text into a file called `submit.speech`.
 
 ```
-Universe        = vanilla
 Executable      = analyze.sh
 Output          = analyze.out
 Error           = analyze.error
 Log             = analyze.log
 Arguments       = gettysburg
-+ProjectName = "ConnectTrain"
-requirements = (HAS_MODULES =?= true) && (OSGVO_OS_STRING == "RHEL 6") && (OpSys == "LINUX")
 ShouldTransferFiles = Yes
 WhenToTransferOutput = ON_EXIT
 transfer_input_files = gettysburg
