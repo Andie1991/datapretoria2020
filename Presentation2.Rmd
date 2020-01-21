@@ -93,3 +93,353 @@ class: left, middle
   * Decide which job runs on which computer
   * Manage a single computer
   * Start up a single job
+
+---
+class: left, middle
+
+# Large Jobs
+
+* Let’s assume you have a ‘large job’
+* What factors could make it large?
+  * Large Data Input or Output or both
+  * Needs to do heavy calculation
+  * Needs a lot of memory
+  * Needs to communicate with other jobs (whether required or not)
+  * Reads and writes a lot of data/files
+  * Heavy graphics processing
+  * .red[Any combination of any of the above]
+  
+---
+class: left, middle
+
+# Large Jobs
+## There is no “One Size Fits All Solution”
+
+* But some solutions are more ”Open” than others. 
+  * Local Laptop/Desktop
+  * Local Cluster
+  * HPC System
+  * Shared HTC Resources
+  * Clouds
+
+
+---
+class: left, middle
+
+# Why is HTC hard?
+
+## The HTC system has to keep track of:
+* Individual tasks  (a.k.a. jobs) & their inputs
+* Computers that are available 
+
+## The system has to recover from failures
+* There will be failures! Distributed computers means more chances for failures.
+
+
+
+---
+class: left, middle
+
+# Why is HTC hard?
+
+## You have to share computers
+* Sharing can be within an organization, or between orgs
+* So you have to worry about security
+* And you have to worry about policies on how you share
+
+## If you use a lot of computers, you have to handle variety:
+* Different kinds of computers (OS, speed, etc..)
+* Different kinds of storage (size, speed, etc…)
+* Different networks interacting (network problems are hard to debug!)
+
+---
+class: center, middle, inverse
+
+# HTCondor
+
+
+---
+class: left, middle
+
+# Surprise!
+## HTCondor does this (and more)
+* Methods to:
+  * Submit/Cancel job. `condor_submit/condor_rm`
+  * Check on state of job. `condor_q`
+  * Check on state of avail. computers. `condor_status`
+* Processes to:
+  * Reliably track set of submitted jobs. `schedd`
+  * Reliably track set of avail. computers. `collector`
+  * Decide which job runs on where. `negotiator`
+  * Manage a single computer `startd`
+  * Start up a single job starter
+  
+
+---
+class: left, middle
+
+# Not only Condor
+
+* You can use other systems:
+  * PBS/Torque
+  * Oracle Grid Engine (né Sun Grid Engine)
+  * LSF
+  * SLURM
+
+## What should you learn at the school?
+  * How do you think about Computing Resources? 
+  * How can you do your science with HTC?
+  * … For now, learn it with Condor, but you can apply it to other systems.
+  
+---
+class: left, middle
+
+# Quick Terminology
+
+* .red[**Cluster**]: A dedicated set of computers not for interactive use
+* .red[**Pool**]: A collection of computers used by Condor
+  * May be dedicated
+  * May be interactive
+
+## Remember: 
+* Condor can manage a cluster in a machine room
+* Condor can use desktop computers
+* Condor can access remote computers
+* HTC uses all available resources
+
+---
+class: left, middle
+
+# Matchmaking
+
+* Matchmaking is fundamental to Condor
+* Matchmaking is two-way
+  * Job describes what it requires:
+    * I need Linux && 8 GB of RAM
+  * Machine describes what it requires:
+    * I will only run jobs from the Physics department
+* Matchmaking allows preferences
+  * I need Linux, and I prefer machines with more memory but will run on any machine you provide me
+  
+---
+class: left, middle
+
+# Why Two-way Matching?
+
+* Condor conceptually divides people into three groups:
+  * Job submitters
+  * Computer owners
+  * Pool (cluster) administrator
+* All three of these groups have preferences;
+* .red[**May or may not be the same people**]
+
+---
+class: left, middle
+
+# ClassAds
+
+* ClassAds state facts: 
+  * *My job’s executable is analysis.exe*
+  * *My machine’s load average is 5.6*
+* ClassAds state preferences: 
+  * *I require a computer with Linux* 
+* ClassAds are extensible: 
+  * They say whatever you want them to say
+
+---
+class: left, middle
+
+# Example ClassAd
+
+```
+*MyType       = "Job"  # <- String
+TargetType   = "Machine"
+*ClusterId    = 1377  # <- A number
+Owner        = "roy“
+Cmd          = “analysis.exe“
+*Requirements =    # <- Expression
+   (Arch == "INTEL") 
+   && (OpSys == "LINUX") 
+   && (Disk >= DiskUsage) 
+   && ((Memory * 1024)>=ImageSize)
+…
+```
+
+
+---
+class: left, middle
+
+# Schema-free ClassAds
+
+* Condor imposes some schema
+  * Owner is a string, ClusterID is a number…
+* But users can extend it however they like, for jobs or machines
+* `AnalysisJobType = “simulation”`
+* `HasJava_1_6 = TRUE`
+* `ShoeLength = 10`
+* Matchmaking can use these attributes:
+```
+Requirements = OpSys == "LINUX" 
+      && HasJava_1_6 == TRUE
+```
+
+---
+class: left, middle
+
+# Don’t worry
+
+* You won’t write ClassAds (usually)
+  * You’ll create a simple submit file
+  * Condor will write the ClassAd
+  * You can extend the ClassAd if you want to
+* You won’t write requirements (usually)
+  * Condor writes them for you
+  * You can extend them
+  * In some environments you provide attributes instead of requirements expressions
+  
+---
+class: left, middle
+
+# Why do jobs fail?
+
+* The computer running the job fails
+  * Or the network, or the disk, or the OS, or…
+* Your job might be preempted:
+  * Condor decides your job is less important than another, so your job is stopped and another started.
+  * Not a “failure” per se, but it may feel like it to you.
+
+
+---
+class: left, middle
+
+# Reliability
+
+* When a job fails or is preempted:
+  * It stays in the queue (on the schedd)
+  * A note is written to the job log file
+  * It reverts to “idle” state
+  * It is eligible to be matched again
+* .blue[**Relax! Condor will run your job again**]
+
+---
+class: left, middle
+
+# Access to data in Condor
+
+* .red[**Option #1**]: Shared filesystem
+  * Simple to use, but make sure your filesystem can handle the load
+* .red[**Option #2**]: Condor’s file transfer
+  * Can automatically send back changed files
+  * Atomic transfer of multiple files
+  * Can be encrypted over the wire
+  * Most common for small applications and data
+* .red[**Option #3**]: Remote I/O
+
+---
+class: left, middle
+
+# Condor File Transfer
+
+* `ShouldTransferFiles = YES`
+  * Always transfer files to execution site
+* `ShouldTransferFiles = NO`
+  * Rely on a shared filesystem
+* `ShouldTransferFiles = IF_NEEDED`
+  * Will automatically transfer the files if needed
+  
+```
+Universe   = vanilla
+Executable = my_job
+Log        = my_job.log	
+ShouldTransferFiles   = YES
+*Transfer_input_files  = dataset$(Process), common.data
+Queue 600
+```
+
+* Transfer_input_files can be a URL:
+```
+Transfer_input_files = http://www.example.com/input.data
+```
+
+
+---
+class: left, middle
+
+# Clusters & Processes
+
+* One submit file can describe lots of jobs
+  * All the jobs in a submit file are a cluster of jobs
+  * Yeah, same term as a cluster of computers
+* Each cluster has a unique “cluster number”
+* Each job in a cluster is called a “process”
+* A Condor “job ID” is the cluster number, a period, and the process number (“20.1”)
+* A cluster is allowed to have one or more processes.
+  * There is always a cluster for every job
+
+---
+class: left, middle
+
+# The `$(Process)` macro
+
+* The initial directory for each job can be specified as `run_$(Process)`, and instead of submitting a single job, we use `Queue 600` to .red[submit 600 jobs at once];
+* The `$(Process)` macro will be expanded to the process number for each job in the cluster (0 - 599), so we’ll have `run_0`, `run_1`, … `run_599` directories
+* All the input/output files will be in different directories!
+
+---
+class: left, middle
+
+# Example with `$(Process)`
+
+```
+# Example condor_submit input file that defines
+# a cluster of 600 jobs with different directories
+Universe   = vanilla
+Executable = my_job
+Log        = my_job.log
+Arguments  = -arg1 –arg2
+Input      = my_job.stdin
+Output     = my_job.stdout
+Error      = my_job.stderr
+*InitialDir = run_$(Process)	# <- run_0 … run_599
+Queue 600					      # <- Creates job 3.0 … 3.599
+
+```
+
+---
+class: left, middle
+
+# Not Only Programming Languages
+
+* You ran a C program this morning
+* You can also run scripting languages such as bash, python, and perl
+* You can also execute programs via the command like R 
+
+---
+class: left, middle
+
+# Running Multiple Jobs
+
+* Can vary arguments, input files, anything specified in the submit file
+  * Options
+    * `queue item matching *.dat`
+    * `queue item in (a.dat, b.dat, c.dat)`
+    * `queue item from list.txt`
+* Can also vary pairs (or more): 
+  * Queue param1,param2 from params.txt
+```
+$ cat params.txt
+5, 2
+4, 2
+5, 1
+4, 1
+```
+---
+class: left, middle
+
+# Wrap Up Notes
+
+* There are several different computing environments
+* There is a very diverse set of computing jobs 
+* Matching jobs to resources is key to not wasting resources
+* Not all of the available environments are open environments
+* Research Computing is Complex

@@ -25,6 +25,7 @@ class: center, middle
 </div>
 
 # International Computational Infrastructure
+## High Throughput Computing
 ### <a href="mailto:raphaelmcobe@gmail.com">@raphaelmcobe</a>
 ### Advanced Institute for Artificial Intelligence - <a href="https://advancedinstitute.ai" taget="_blank">AI2</a>
 ### Sao Paulo Research and Analysis Center - <a href="https://sprace.org.br" target="_blank">SPRACE</a>
