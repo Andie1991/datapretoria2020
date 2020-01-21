@@ -81,7 +81,7 @@ R is a bit fussy about where it's been installed on disk, so I had to write a wr
    1. Invoke R, using whatever magic is needed. In our case, I set up some environment variables and invoke the right executable.
 
 ```
-#!/bin/sh -x
+#!/bin/bash
 
 if [ $# -ne 1 ]; then
     echo "Usage: run-r "
@@ -91,16 +91,15 @@ fi
 # Step 1: Set up our environment, the R module.
 source /cvmfs/oasis.opensciencegrid.org/osg/modules/lmod/current/init/bash
 module load R
-module load libgfortran
 
 # Step 2, Invoke R with the proper environment
-R --slave --vanilla < $1
+Rscript --vanilla $1
 ```
 
 You could easily execute this on OSG Connect locally by making the shell script executable and executing it.
 
 ```
-$ chmod 755 run-r.sh
+$ chmod +x run-r.sh
 $ ./run-r.sh demo.r
 ```
 
@@ -109,20 +108,5 @@ Write a Condor submit file that will use R to run the `demo.r` program.
 
 Make sure you get back the output. Make sure you transfer the program. 
 
-## The answer
-
-This should be easy for you now, but if it's not, here's the answer, just in case.
-
-```
-universe = vanilla
-executable = run-r.sh
-+ProjectName = "ConnectTrain"
-arguments = demo.r
-transfer_input_files = demo.r
-log = R.log.$(Cluster).$(Process)
-error = R.err.$(Cluster).$(Process)
-output = R.out.$(Cluster).$(Process)
-requirements = (HAS_MODULES =?= true) && (OSGVO_OS_STRING == "RHEL 6") && (OpSys == "LINUX")
-queue  
-```
+[The answer](05-RJob-Answer.md)
 
