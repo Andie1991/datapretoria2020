@@ -134,11 +134,15 @@ What else can you find out with condor_q? Try any one of:
 
 ### Double bonus points
 
-How do you use the `-constraint` or `-format` options to `condor_q`? When would you want them? When would you use the -l option? This might be an easier exercise to try once you submit some jobs.
+How do you use `-format` options to `condor_q`? When would you want it?  This
+might be an easier exercise to try once you submit some jobs.
 
 ## condor_status
 
-You can find out what computers are in your Condor pool. (A pool is similar to a cluster, but it doesn't have the connotation that all computers are dedicated full-time to computation: some may be desktop computers owned by users.) To look, use condor_status:
+You can find out what computers are in your Condor pool. (A pool is similar to
+a cluster, but it doesn't have the connotation that all computers are dedicated
+full-time to computation: some may be desktop computers owned by users.) To
+look, use condor_status:
 
 ```
 $ condor_status -pool flock.opensciencegrid.org
