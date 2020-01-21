@@ -1,0 +1,95 @@
+---
+title: "International Computational Infrastructure"
+subtitle: ""
+author: "@raphaelmcobe"
+institute: "Center for Scientific Computing - Sao Paulo State University"
+date: "January 2020"
+output:
+  xaringan::moon_reader:
+    css: ["theme.css", "theme-fonts.css"]
+    lib_dir: libs
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+
+---
+class: center, middle
+
+<div style="float:left; text-align:left; margin-left:8%">
+  <img src="images/ai2_logo_256h-1.png" style="width:30%;"/>
+</div>
+<div>
+  <img src="images/spracelogo.png" style="width:10%;"/>
+</div>
+
+# International Computational Infrastructure
+## Batch Management with HTCondor
+### <a href="mailto:raphaelmcobe@gmail.com">@raphaelmcobe</a>
+### Advanced Institute for Artificial Intelligence - <a href="https://advancedinstitute.ai" taget="_blank">AI2</a>
+### Sao Paulo Research and Analysis Center - <a href="https://sprace.org.br" target="_blank">SPRACE</a>
+### Sao Paulo State University
+### January, 2020
+
+---
+class: left, middle
+
+# Special thanks
+
+* The organizers for the invitation;
+* Rob Quick and the OSG team for most of the material used in this presentation;
+
+---
+class: left, middle
+
+# The goals for this lecture
+
+* Profiling your application
+* Picking the appropriate resources
+* Understand the basics of HTCondor
+
+.center[<img src="images/condor.jpg" style="width: 50%;"/>]
+
+---
+class: left, middle
+
+# What does the user provide?
+* A “headless job”
+  * Not interactive/no GUI: how could you interact with 1000 simultaneous jobs?
+* A set of input files
+* A set of output files
+* A set of parameters (command-line arguments)
+
+---
+class: left, middle
+
+# What does the user provide?
+* Requirements:
+  * Ex: My job requires at least 2GB of RAM
+  * Ex: My job requires Linux
+* Control/Policy:
+  * Ex: Send me email when the job is done
+  * Ex: Job 2 is more important than Job 1
+  * Ex: Kill my job if it runs for more than 6 hours
+  
+---
+class: left, middle
+
+# What does the system provide? 
+
+* Methods to:
+  * Submit/Cancel job
+  * Check on state of job
+  * Check on state of available computers
+  
+---
+class: left, middle
+
+# What does the system provide? 
+* Processes to:
+  * Reliably track set of submitted jobs
+  * Reliably track set of available computers
+  * Decide which job runs on which computer
+  * Manage a single computer
+  * Start up a single job
