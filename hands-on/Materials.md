@@ -1,6 +1,7 @@
-# Data San José School Materials
+# Data Pretoria  School Materials
 
-We will be using OSG Connect for this set of sessions. Please visit [http://www.osgconnect.net](http://www.osgconnect.net) for more information.
+We will be using OSG Connect for this set of sessions. Please visit
+[http://www.osgconnect.net](http://www.osgconnect.net) for more information.
 
 ## Wednesday Afternoon -  Computational Infrastructures - Session 1
 
