@@ -1,7 +1,8 @@
-# 
+# How to Access OSG? 
 
 ## Install an SSH-Cleint
 
+### PuTTY
 Download and install a SSH Client. We recommend PuTTY, but any ssh client is acceptable. 
 
 https://www.putty.org/ 
@@ -10,6 +11,11 @@ https://www.putty.org/
 
 After opening the executable you should see the following screen:
 ![Putty Screen shot](putty_screenshot.png)
+
+### Git Bash 
+
+You can also use Git bash for accessing the infrastructure.
+You can download it from [here](https://git-scm.com/downloads).
 
 ## Authentication for CI Exercises
 
@@ -37,14 +43,13 @@ Why do you need both a password and a key? What is the role of the password in t
 
 ## Where you will work
 
-You will be logging into training.osgconnect.net for the CyberInfrastructure exercises. To confirm you have the proper authentication and authorization to do the exercises tomorrow and Friday we will test logins today. 
+You will be logging into training.osgconnect.net for the CyberInfrastructure exercises. To confirm you have the proper authentication and authorization to do the exercises tomorrow and Thursday we will test logins first. 
 
-Due to the local network firewall setup (another security mechanism) and key installation, we will go to the CHPC facility first (thanks to Nkwe and Anwar for setting up this). 
+Due to the local network firewall setup (another security mechanism) and key installation, we will go to the CHPC facility first (thanks to Nkwe and Anwar for setting this up). 
 
-We will be using the studentXX acounts (replace XX with your osguser ID) with
-the specified password.
+We will be using the studentXX acounts (replace XX with your osguser ID). The password for this account will be written at the board.
 
-If you are using a Linux Machine, open a terminal and use the following
+If you are using a Linux Machine or Windows with Git Bash, open a terminal and use the following
 command (and use the password you have been supplied). 
 
 ```
