@@ -14,14 +14,11 @@ DAGMan has many abilities such as throttling jobs, recovery from failures, and m
 We're going to go back to the "simple" example that we did first. (The one with the job that slept and multiplied a number by 2.) Make sure that you have a submit file has only one queue command in it, as when we first wrote it. And we will just run vanilla universe jobs for now, though we could equally well run standard universe jobs. 
 
 ```
-Universe                = vanilla
-Executable              = simple
+Executable              = simple.sh
 Arguments               = 4 10
-+ProjectName            = "ConnectTrain"
 Log                     = simple.log
 Output                  = simple.out
 Error                   = simple.error
-requirements = (HAS_MODULES =?= true) && (OSGVO_OS_STRING == "RHEL 6") && (OpSys == "LINUX")
 should_transfer_files   = YES
 when_to_transfer_output = ON_EXIT
 Queue
