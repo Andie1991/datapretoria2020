@@ -3,7 +3,8 @@
 ## Install an SSH-Cleint
 
 ### PuTTY
-Download and install a SSH Client. We recommend PuTTY, but any ssh client is acceptable. 
+Download and install a SSH Client. We recommend PuTTY, but any ssh client is
+acceptable. 
 
 https://www.putty.org/ 
 
@@ -19,7 +20,10 @@ You can download it from [here](https://git-scm.com/downloads).
 
 ## Authentication for CI Exercises
 
-You will receive login credentials at the beginning of this session. To authenticate (prove you who you say you are and establish what you are authorized to do) the bridgekeeper (login nodes) requires three bits of information: 
+You will receive login credentials at the beginning of this session. To
+authenticate (prove you who you say you are and establish what you are
+authorized to do) the bridgekeeper (login nodes) requires three bits of
+information: 
 
 From Monty Python and the Holy Grail: 
 
@@ -39,24 +43,31 @@ or...
 2) Tell me something only you know.
 3) Show me someething only you have.  
 
-Why do you need both a password and a key? What is the role of the password in the public-private key scheme? 
+Why do you need both a password and a key? What is the role of the password in
+the public-private key scheme? 
 
 ## Where you will work
 
-You will be logging into training.osgconnect.net for the CyberInfrastructure exercises. To confirm you have the proper authentication and authorization to do the exercises tomorrow and Thursday we will test logins first. 
+You will be logging into training.osgconnect.net for the CyberInfrastructure
+exercises. To confirm you have the proper authentication and authorization to
+do the exercises tomorrow and Thursday we will test logins first. 
 
-Due to the local network firewall setup (another security mechanism) and key installation, we will go to the CHPC facility first (thanks to Nkwe and Anwar for setting this up). 
+Due to the local network firewall setup (another security mechanism) and key
+installation, we will go to the CHPC facility first (thanks to Nkwe and Anwar
+for setting this up). For CHPC, we will be using *studentXX* acounts (replace
+XX with your osguser ID, e.g., the student that received the `osguser35` is
+supposed to use `student35` to access CHPC). The password for the *studentXX*
+account will be written at the board.
 
-We will be using the studentXX acounts (replace XX with your osguser ID). The password for this account will be written at the board.
-
-If you are using a Linux Machine or Windows with Git Bash, open a terminal and use the following
-command (and use the password you have been supplied). 
+If you are using a Linux Machine or Windows with Git Bash, open a terminal and
+use the following command (and use the password you have been supplied). 
 
 ```
-ssh -o PreferredAuthentications=password student0XX@lengau.chpc.ac.za
+ssh -o PreferredAuthentications=password studentXX@lengau.chpc.ac.za
 ```
 
-If you are using putty, you should fill the *Host Name (or IP address)* with the value `lengau.chpc.ac.za` as seen below:
+If you are using putty, you should fill the *Host Name (or IP address)* with
+the value `lengau.chpc.ac.za` as seen below:
 ![Putty with host information](putty_hostname.png)
 
 After hitting the *Open* button you may see the following message:
@@ -67,7 +78,8 @@ You should hit the *Yes* button.
 
 ### After connecting to the CHPC facility
 
-Login on to the OSG submission node using the following command along with the password you have been supplied. 
+Login on to the OSG submission node using the following command along with the
+password you have been supplied. 
 
 ```
 $ ssh training.osgconnect.net
@@ -79,6 +91,10 @@ Warning: Permanently added 'training.osgconnect.net,128.135.158.220' (ECDSA) to 
 Enter passphrase for key '/home/osguser01/.ssh/id_rsa':
 ```
 
-You may get a message asking you to establish the authenticity of this connection. Answer "yes". 
+You may get a message asking you to establish the authenticity of this
+connection. Answer "yes". 
 
-When you login to the machine you will be in your "home directory".  We recommend that you work in this directory as nobody else can modify the files here (what security concept we covered today does this recommendation satisfy?).
+When you login to the machine you will be in your "home directory".  We
+recommend that you work in this directory as nobody else can modify the files
+here (what security concept we covered today does this recommendation
+satisfy?).
