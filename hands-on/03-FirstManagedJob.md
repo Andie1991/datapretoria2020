@@ -16,7 +16,7 @@ Before you can submit a job to Condor, you need a job. We will quickly write a
 small program in C. If you aren't an expert C programmer, fear not. We will
 hold your hand throughout this process.
 
-Create a file called simple.c using your favorite editor. Put it anywhere you
+Create a file called simple.sh using your favorite editor. Put it anywhere you
 like in your home directory. In that file, put the following text. Copy and
 paste is a good choice: 
 
@@ -336,7 +336,7 @@ extra challenges. You'll need to peruse the Condor manual (particularly the
 condor_submit](http://www.cs.wisc.edu/condor/manual/v8.4/condor_submit.html))
 to find answers. Feel free to ask Rob--he'd love to give you hints!
 
-   * Make another scientific program (probably just modify simple.c) that takes
+   * Make another scientific program (probably just modify simple.sh) that takes
      its input from a file. Now submit 3 copies of this program where each
      input file is in a separate directory. Use the initialdir option
      [described in the
