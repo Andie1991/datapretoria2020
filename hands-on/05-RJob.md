@@ -110,3 +110,5 @@ Make sure you get back the output. Make sure you transfer the program.
 
 [The answer](05-RJob-Answer.md)
 
+Now, modify some R code that you wrote during this school to run on OSG.
+Remember to transfer the script and the data files to the execution node.
