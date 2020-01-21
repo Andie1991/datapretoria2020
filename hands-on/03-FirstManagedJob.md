@@ -1,101 +1,113 @@
 # Submitting your first Condor job
 
 ### Objective
-The objective of this exercise to have you run and understand your first Condor job, as well as run small sets of jobs in a parameter sweep. This is an important exercise because it is the basis for everything that follows. If there is _anything_ you don't understand in this exercise, _please ask_ before you continue on.
+The objective of this exercise to have you run and understand your first Condor
+job, as well as run small sets of jobs in a parameter sweep. This is an
+important exercise because it is the basis for everything that follows. If
+there is _anything_ you don't understand in this exercise, _please ask_ before
+you continue on.
 
-Because this is an important foundation, please seriously consider doing the &ldquo;On Your Own&rdquo; section.
+Because this is an important foundation, please seriously consider doing the
+&ldquo;On Your Own&rdquo; section.
 
 ## First you need a job
 
-Before you can submit a job to Condor, you need a job. We will quickly write a small program in C. If you aren't an expert C programmer, fear not. We will hold your hand throughout this process.
+Before you can submit a job to Condor, you need a job. We will quickly write a
+small program in C. If you aren't an expert C programmer, fear not. We will
+hold your hand throughout this process.
 
-Create a file called simple.c using your favorite editor. Put it anywhere you like in your home directory. In that file, put the following text. Copy and paste is a good choice: 
+Create a file called simple.c using your favorite editor. Put it anywhere you
+like in your home directory. In that file, put the following text. Copy and
+paste is a good choice: 
 
 ```
 $ mkdir -p ~/condor-test
 $ cd ~/condor-test
 ```
 
-Use your preferred text editor to create this C program. (Shown below with nano.)
+Use your preferred text editor to create this  program. (Shown below with
+nano.)
 
 ```
-$ nano simple.c
+$ nano simple.sh
 ```
 
 Paste in the following C code. 
 
 ```
-#include <stdio.h>
+#!/bin/bash
 
-int main(int argc, char **argv)
-{
-    int sleep_time;
-    int input;
-    int failure;
+if [ $# -ne 2 ]; then
+    echo "Usage: simple.sh sleep-time integer"
+    exit 1
+fi
 
-    if (argc != 3) {
-        printf("Usage: simple &lt;sleep-time&gt; &lt;integer&gt;\n");
-        failure = 1;
-    } else {
-        sleep_time = atoi(argv[1]);
-        input      = atoi(argv[2]);
-
-        printf("Thinking really hard for %d seconds...\n", sleep_time);
-        sleep(sleep_time);
-        printf("We calculated: %d\n", input * 2);
-        failure = 0;
-    }
-    return failure;
-}
+echo "Thinking really hard for $1 seconds.."
+sleep $1
+answer=$(( $2 * 2 ))
+echo "We calculated $answer."
+exit 0
 ```
 
-Now compile that program:
+This script will not be executable without changing the permissions.
 
 ```
-$ gcc -o simple simple.c
-$ ls -lh simple
--rwxrwxr-x 1 roy roy 595K Jun 20 11:12 simple
+$ chmod +x simple.sh
+$ ls -lh simple.sh
+-rwxr-xr-x 1 roy roy 595K Jun 20 11:12 simple.sh
 ```
 
-Finally, run the program and tell it to sleep for four seconds and calculate 10 * 2: 
+Finally, run the program and tell it to sleep for four seconds and calculate 10
+* 2: 
 
 ```
-$ ./simple 4 10
+$ ./simple.sh 4 10
 Thinking really hard for 4 seconds...
 We calculated: 20
 ```
 
-Great! You just had a job run locally on the machine you are logged into (user-training.osgconnect.net). The next step is to run this job on a remote computer - and this is a job you can tell Condor to run! Although it clearly isn't an interesting job, it models some of the aspects of a real scientific program: it takes a while to run and it does a calculation. 
+Great! You just had a job run locally on the machine you are logged into
+(training.osgconnect.net). The next step is to run this job on a remote
+computer - and this is a job you can tell Condor to run! Although it clearly
+isn't an interesting job, it models some of the aspects of a real scientific
+program: it takes a while to run and it does a calculation. 
 
-Think back to the lecture. I said that our first step was to have a job to run. Now we'll work on running it in Condor, and eventually running lots of copies of it.
+Think back to the lecture. I said that our first step was to have a job to run.
+Now we'll work on running it in Condor, and eventually running lots of copies
+of it.
 
 ## Submitting your job
-Now that you have a job, you just have to tell Condor to run it. Put the following text into a file called `submit`:
+Now that you have a job, you just have to tell Condor to run it. Put the
+following text into a file called `submit`:
 
 ```
-Universe   = vanilla
-Executable = simple
-Arguments  = 4 10
-+ProjectName = "ConnectTrain"
-Log        = simple.log
-Output     = simple.out
-Error      = simple.error
-requirements = (HAS_MODULES =?= true) && (OSGVO_OS_STRING == "RHEL 6") && (OpSys == "LINUX")
-should_transfer_files   = YES
-when_to_transfer_output = ON_EXIT
-Queue
+executable = short.sh
+arguments  = 4 10
+output = short.output
+log = short.log
+
+request_cpus = 1
+request_memory = 1 MB
+request_disk = 1 MB
+
+queue 1
 ```
 
 Let's examine each of these lines:
 
-   * *Universe:* The vanilla universe means a plain old job. Later on, we'll encounter some special universes.
    * *Executable:* The name of your program
-   * *Arguments:* These are the arguments you want. They will be the same arguments we typed above.
-   * *Log:* This is the name of a file where Condor will record information about your job's execution. While it's not required, it is a really good idea to have a log. If something goes wrong you can refer to this log to help figure out the problem.
+   * *Arguments:* These are the arguments you want. They will be the same
+     arguments we typed above.
+   * *Log:* This is the name of a file where Condor will record information
+     about your job's execution. While it's not required, it is a really good
+     idea to have a log. If something goes wrong you can refer to this log to
+     help figure out the problem.
    * *Output:* Where Condor should put the standard output from your job.
-   * *Error:* Where Condor should put the standard error from your job. Our job isn't likely to have any, but we'll put it there to be safe.
-   * *should_transfer_files:* Tell Condor that it should transfer files, instead of relying on a shared filesystem. While your home directories (on the glite-tutor computers) are mounted on NFS, you do not have user accounts on the worker nodes, so your jobs cannot access files on NFS. In addition, NFS isn't available between the local UI computers and the remote worker nodes. Therefore we will have Condor transfer files to the remote computer.
-   * *when_to_transfer_output:* A technical detail about when files should be transported back to the computer from which you submitted your job. Don't worry about the details for now. If you're really curious, you can read [all the details in the Condor manual](http://www.cs.wisc.edu/condor/manual/v7.6/2_5Submitting_Job.html#sec:file-transfer).
+   * *Error:* Where Condor should put the standard error from your job. Our job
+     isn't likely to have any, but we'll put it there to be safe.
+   * *request_cpus:* the ammount of CPU required to run your job;
+   * *request_memory:* the ammount of RAM memory required to run your job;
+   * *request_disk:* the ammount of storage required to run your job;
 
 Next, tell Condor to run your job: 
 
@@ -105,7 +117,10 @@ Submitting job(s).
 1 job(s) submitted to cluster 16.
 ```
 
-Now, watch your job run (insert your username in the command below instead of `USER`.  If you forgot your username use the `whoami` command.  Note that most of your output will be different than the example, the important column to watch is the `ST` column - the job state):
+Now, watch your job run (insert your username in the command below instead of
+`USER`.  If you forgot your username use the `whoami` command.  Note that most
+of your output will be different than the example, the important column to
+watch is the `ST` column - the job state):
 
 ```
 # Note the job state of 'I' means the job is idle - not yet running
@@ -142,9 +157,13 @@ Total for query: 0 jobs; 0 completed, 0 removed, 0 idle, 0 running, 0 held, 0 su
 Total for all users: 0 jobs; 0 completed, 0 removed, 0 idle, 0 running, 0 held, 0 suspended
 ```
 
-*Tip*: While you are waiting for your job to run and complete you can check out ["A few tips and tricks"](https://twiki.grid.iu.edu/bin/view/Operations/HTCReviewCondorTips) to learn how to user `condor_q` more effectively.
+*Tip*: While you are waiting for your job to run and complete you can check out
+["A few tips and
+tricks"](https://twiki.grid.iu.edu/bin/view/Operations/HTCReviewCondorTips) to
+learn how to user `condor_q` more effectively.
 
-When my job was done, it was no longer listed. Because I told Condor to log information about my job, I can see what happened: 
+When my job was done, it was no longer listed. Because I told Condor to log
+information about my job, I can see what happened: 
 
 ```
 $ cat simple.log
@@ -172,7 +191,9 @@ $ cat simple.log
 	   Memory (MB)          :        0        1      1900
 ```
 
-That looks good: the job started up quickly, though you will often see slightly slower startups. Condor doesn't optimize for fast job startup, but for high throughput, The job ran for four seconds.
+That looks good: the job started up quickly, though you will often see slightly
+slower startups. Condor doesn't optimize for fast job startup, but for high
+throughput, The job ran for four seconds.
 
 Now take a look at the job's output:
 
@@ -182,32 +203,37 @@ Thinking really hard for 4 seconds...
 We calculated: 20
 ```
 
-Excellent! We ran our sophisticated scientific job on a Condor pool! We've only run one job though. Can we run more?
+Excellent! We ran our sophisticated scientific job on a Condor pool! We've only
+run one job though. Can we run more?
 
 ## Doing a parameter sweep
-If you only ever had to run a single job, you probably wouldn't need Condor. But we would like to have our program calculate a whole set of values for different inputs. How can we do that? Let's change our `submit` file to look like this: 
+If you only ever had to run a single job, you probably wouldn't need Condor.
+But we would like to have our program calculate a whole set of values for
+different inputs. How can we do that? Let's change our `submit` file to look
+like this: 
 
 ```
-Universe   = vanilla
-Executable = simple
-+ProjectName = "ConnectTrain"
+Executable = simple.sh
 Arguments  = 4 10
 Log        = simple.$(Process).log
 Output     = simple.$(Process).out
 Error      = simple.$(Process).error
-requirements = (HAS_MODULES =?= true) && (OSGVO_OS_STRING == "RHEL 6") && (OpSys == "LINUX")
-should_transfer_files   = YES
-when_to_transfer_output = ON_EXIT
-Queue
+Queue 1
 
 Arguments = 4 11
-Queue
+Queue 1
 
 Arguments = 4 12
-Queue
+Queue 1
 ```
 
-There are two important differences to notice here. First, the Log, Output and Error lines have the `$(Process)` macro in them. This means that the output and error files will be named according to the process number of the job. You'll see what this looks like in a moment. Second, we told Condor to run the same job an extra two times by adding extra `Arguments` and `Queue` statements. We are doing a parameter sweep on the values 10, 11, and 12. Let's see what happens: 
+There are two important differences to notice here. First, the Log, Output and
+Error lines have the `$(Process)` macro in them. This means that the output and
+error files will be named according to the process number of the job. You'll
+see what this looks like in a moment. Second, we told Condor to run the same
+job an extra two times by adding extra `Arguments` and `Queue` statements. We
+are doing a parameter sweep on the values 10, 11, and 12. Let's see what
+happens: 
 
 ```
 $ condor_submit submit
@@ -256,9 +282,15 @@ Thinking really hard for 4 seconds...
 We calculated: 24
 ```
 
-Notice that we had three jobs with the same cluster number, but different process numbers. They have the same cluster number because they were all submitted from the same submit file. When the jobs ran, they created three different output files, each with the desired output.
+Notice that we had three jobs with the same cluster number, but different
+process numbers. They have the same cluster number because they were all
+submitted from the same submit file. When the jobs ran, they created three
+different output files, each with the desired output.
 
-You are now ready to submit lots of jobs! Although this example was simple, Condor has many, many options so you can get a wide variety of behaviors. You can find many of these if you look at [the documentation for condor_submit](http://www.cs.wisc.edu/condor/manual/v8.6/condor_submit.html).
+You are now ready to submit lots of jobs! Although this example was simple,
+Condor has many, many options so you can get a wide variety of behaviors. You
+can find many of these if you look at [the documentation for
+condor_submit](http://www.cs.wisc.edu/condor/manual/v8.6/condor_submit.html).
 
 ## On your own
 
@@ -266,17 +298,26 @@ Now that you've gotten your feet wet, try a few things on your own.
 
 ### Just one log file
 
-There's no reason to have a separate log file for each job. Change your submit file so that it uses a single log file. Does it all still work?
+There's no reason to have a separate log file for each job. Change your submit
+file so that it uses a single log file. Does it all still work?
 
 ### New outputs for each run
 
-You might have noticed that the output files were over-written when you re-ran the jobs. (That is, `simple.1.out` was just re-written.) That was okay for a simple exercise, but it might be very bad if you had wanted to keep around the results. Maybe you changed a parameter or rebuilt your program, and you want to compare the outputs.
+You might have noticed that the output files were over-written when you re-ran
+the jobs. (That is, `simple.1.out` was just re-written.) That was okay for a
+simple exercise, but it might be very bad if you had wanted to keep around the
+results. Maybe you changed a parameter or rebuilt your program, and you want to
+compare the outputs.
 
-Just like you used `$(Process)`, you can also use `$(Cluster)`. This will be a number from your job ID. For example, it would be 34 from the above example. Change your submit file to use `$(Cluster)` and `$(Process)`. If you do two job submissions, will you have separate output files?
+Just like you used `$(Process)`, you can also use `$(Cluster)`. This will be a
+number from your job ID. For example, it would be 34 from the above example.
+Change your submit file to use `$(Cluster)` and `$(Process)`. If you do two job
+submissions, will you have separate output files?
 
 ### Lots of jobs
 
-Instead of specifying the Arguments multiple times with multiple `queue` statements, try this:
+Instead of specifying the Arguments multiple times with multiple `queue`
+statements, try this:
 
 ```
 Arguments = $(Process) $(Cluster)
@@ -285,12 +326,27 @@ queue 10
 
 What does it mean? What happens? Does it work as you expect?
 
-(An aside: you might wish to be able to do math, something like `$(Process)+1`. Unfortunately, you can't do that.)
+(An aside: you might wish to be able to do math, something like `$(Process)+1`.
+Unfortunately, you can't do that.)
 
 ## Challenges
 
-If you have time and feel comfortable with the technical background, try these extra challenges. You'll need to peruse the Condor manual (particularly the [manual page for condor_submit](http://www.cs.wisc.edu/condor/manual/v8.4/condor_submit.html)) to find answers. Feel free to ask Rob--he'd love to give you hints!
+If you have time and feel comfortable with the technical background, try these
+extra challenges. You'll need to peruse the Condor manual (particularly the
+[manual page for
+condor_submit](http://www.cs.wisc.edu/condor/manual/v8.4/condor_submit.html))
+to find answers. Feel free to ask Rob--he'd love to give you hints!
 
-   * Make another scientific program (probably just modify simple.c) that takes its input from a file. Now submit 3 copies of this program where each input file is in a separate directory. Use the initialdir option [described in the manual](http://www.cs.wisc.edu/condor/manual/v8.4/condor_submit.html). This will let you specify a directory for the input to the program. You can run specify the initialdir with `$(Process)`. You can specify extra files to copy with `transfer_input_files`. Now you're really learning the basics of running something like a real scientific job!
+   * Make another scientific program (probably just modify simple.c) that takes
+     its input from a file. Now submit 3 copies of this program where each
+     input file is in a separate directory. Use the initialdir option
+     [described in the
+     manual](http://www.cs.wisc.edu/condor/manual/v8.4/condor_submit.html).
+     This will let you specify a directory for the input to the program. You
+     can run specify the initialdir with `$(Process)`. You can specify extra
+     files to copy with `transfer_input_files`. Now you're really learning the
+     basics of running something like a real scientific job!
    * Condor can send you email when a job finishes. How can you control this? 
-   * You know that your job should never run for more than four hours. If it does, then the job should be killed because there is a problem. How can you tell Condor to do this for you? 
+   * You know that your job should never run for more than four hours. If it
+     does, then the job should be killed because there is a problem. How can
+     you tell Condor to do this for you? 
