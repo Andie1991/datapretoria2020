@@ -316,7 +316,9 @@ class: left, middle
 ## The system has to recover from failures
 * There will be failures! Distributed computers means more chances for failures.
 
+???
 
+Keeping track of several small pieces in a very large scale is incredibly hard
 
 ---
 class: left, middle
