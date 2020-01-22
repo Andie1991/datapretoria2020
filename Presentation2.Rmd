@@ -374,6 +374,11 @@ class: left, middle
 * A Condor “job ID” is the cluster number, a period, and the process number (“20.1”)
 * A cluster is allowed to have one or more processes.
   * There is always a cluster for every job
+  
+  
+???
+
+Even single jobs are started within a cluster, containing a single job
 
 ---
 class: left, middle
@@ -383,6 +388,9 @@ class: left, middle
 * The initial directory for each job can be specified as `run_$(Process)`, and instead of submitting a single job, we use `Queue 600` to .red[submit 600 jobs at once];
 * The `$(Process)` macro will be expanded to the process number for each job in the cluster (0 - 599), so we’ll have `run_0`, `run_1`, … `run_599` directories
 * All the input/output files will be in different directories!
+
+???
+Imagine running scientific tools with several parameters
 
 ---
 class: left, middle
@@ -399,17 +407,20 @@ Input      = my_job.stdin
 Output     = my_job.stdout
 Error      = my_job.stderr
 *InitialDir = run_$(Process)	# <- run_0 … run_599
-Queue 600					      # <- Creates job 3.0 … 3.599
+Queue 600				# <- Creates job 3.0 … 3.599
 
 ```
+
+???
+That affects the transfer_input_file. Whenever an input file is specified that would be inside the InitialDir
 
 ---
 class: left, middle
 
-# Not Only Programming Languages
+# Not Only bash scripts
 
-* You ran a C program this morning
-* You can also run scripting languages such as bash, python, and perl
+* You can ran a C program
+* You can also run scripting languages such as python, and perl
 * You can also execute programs via the command like R 
 
 ---
@@ -423,7 +434,7 @@ class: left, middle
     * `queue item in (a.dat, b.dat, c.dat)`
     * `queue item from list.txt`
 * Can also vary pairs (or more): 
-  * Queue param1,param2 from params.txt
+  * `queue param1,param2 from params.txt`
 ```
 $ cat params.txt
 5, 2
