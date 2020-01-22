@@ -10,14 +10,14 @@ We will be using OSG Connect for this set of sessions. Please visit
    * Lecture 1 - [Slides](https://raphaelmcobe.github.io/datapretoria2020/Presentation.html)
    * [Environment Setup](00-Pre-Introduction-Login.md)
    * [Introduction](01-Introduction.md) 
-   * [Our Job Manager (HTCondor)](02-OurJobManager.md)
-   * [Your First Managed Job](03-FirstManagedJob.md)
-   * [A few tips and tricks](04-TipsandTricks.md)
    
 ## Wednesday Afternoon  - Computational Infrastructures - Session 2
 
 ### HTCondor
    * Lecture 2 - [Slides](https://raphaelmcobe.github.io/datapretoria2020/Presentation2.html)
+   * [Our Job Manager (HTCondor)](02-OurJobManager.md)
+   * [Your First Managed Job](03-FirstManagedJob.md)
+   * [A few tips and tricks](04-TipsandTricks.md)
    * [An R Job](05-RJob.md)
    * [Working with file I/O](06-WorkingwithFiles.md)
    
